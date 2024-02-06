@@ -1,15 +1,14 @@
 class SpaceCadetPinball < Formula
   desc "Reverse engineering of 3D Pinball for Windows - Space Cadet, a game bundled with Windows."
   homepage "https://github.com/k4zmu2a/SpaceCadetPinball"
-  url "https://github.com/k4zmu2a/SpaceCadetPinball/archive/refs/tags/Release_2.0.1.tar.gz"
-  sha256 "7b71815339c86a428d3569a5235c6ece0e2d4ff1d8025984ede6f772ca4f5423"
+  url "https://github.com/k4zmu2a/SpaceCadetPinball/archive/refs/tags/Release_2.1.0.tar.gz"
+  sha256 "b647dc59abad3d52378b9f67ff4fb70a37e9752afaff1d098b71028cad29b8d6"
   license "MIT"
-
-  uses_from_macos "unrar"
 
   depends_on "timidity"
   depends_on "SDL2_mixer"
   depends_on "cmake" => :build
+  depends_on "libarchive" => :build
 
   resource "Space_Cadet" do
     url "https://archive.org/download/SpaceCadet_Plus95/Space_Cadet.rar", using: :nounzip
@@ -30,13 +29,9 @@ class SpaceCadetPinball < Formula
     end
     system "cmake", "--build", "build"
     bin.install "bin/SpaceCadetPinball"
-    
-    mkdir "#{prefix}/share/SpaceCadetPinball/"
-    resource("Space_Cadet").stage { system "/usr/local/bin/unrar e -y Space_Cadet.rar PINBALL.DAT \*.MID Sounds/\*.WAV #{prefix}/share/SpaceCadetPinball/" }
-    resource("FULLTILT").stage { system "unzip -j -n FULLTILT.ZIP CADET/CADET.DAT CADET/SOUND/\* -d #{prefix}/share/SpaceCadetPinball/" }
-  end
 
-  test do
-    # `test do` will create, run in and delete a temporary directory.
+    mkdir "#{prefix}/share/SpaceCadetPinball/"
+    resource("Space_Cadet").stage { system "#{HOMEBREW_PREFIX}/opt/libarchive/bin/bsdtar -x -f Space_Cadet.rar --include='PINBALL.DAT' --include='*.MID' --include='*.WAV' -s'#Sounds\/##' -C #{prefix}/share/SpaceCadetPinball/" }
+    resource("FULLTILT").stage { system "unzip -j -n FULLTILT.ZIP CADET/CADET.DAT CADET/SOUND/\* -d #{prefix}/share/SpaceCadetPinball/" }
   end
 end
