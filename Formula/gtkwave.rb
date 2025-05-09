@@ -5,7 +5,10 @@ class Gtkwave < Formula
   license "GPL-2.0-or-later"
 
   depends_on "gtk+3"
+  depends_on "gtk4"
+  depends_on "cmake" => :build
   depends_on "desktop-file-utils" => :build
+  depends_on "glib" => :build
   depends_on "gobject-introspection" => :build
   depends_on "gtk-mac-integration" => :build
   depends_on "meson" => :build
@@ -14,8 +17,8 @@ class Gtkwave < Formula
   depends_on "shared-mime-info" => :build
 
   def install
-    ENV["DESTDIR"] = "/"
-    system "meson", "setup", "build", *std_meson_args
+    # use std_meson_args without "--wrap-mode=nofallback" from brew/Library/Homebrew/formula.rb
+    system "meson", "setup", "build", "-Dupdate_mime_database=false", "--prefix=#{prefix}", "--libdir=#{lib}", "--buildtype=release"
     system "meson", "compile", "-C", "build", "--verbose"
     system "meson", "install", "-C", "build"
   end

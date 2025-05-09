@@ -1,0 +1,14 @@
+# JetBrains IDE
+.idea/
+
+# Visual Studio Code
+*.code-workspace
+.history/
+.vscode/*
+!.vscode/extensions.json
+*.vsix
+
+# OS Garbage
+.DS_Store
+desktop.ini
+Thumbs.db
